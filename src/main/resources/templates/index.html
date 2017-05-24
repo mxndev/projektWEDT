@@ -1,24 +1,32 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="styles.css"/>
+<title>Getting Started: Serving Web Content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 	<div id="header">WEDT - wykrywanie paragrafów</div>
 	<div id="fullpage">
-		<br/><p>Załaduj plik do przetwarzania oraz wybierz jego typ.</p>
-		<form enctype = "multipart/form-data" method = "POST" class="validateTips" action="upload"><br/>
-			<br/>
-			<input type="radio" name="type" value="plain">Tekst zwykły - sformatowany</input><br/>
-			<input type="radio" name="type" value="html">Strona internetowa - html</input><br/>
-			<input type = "file" id = "file" class="text ui-widget-content ui-corner-all"/><br/>
-			<br/>
-			<input type="submit" id="upload" value="Wyślij plik" class="button" />
+	<div th:switch="${error}">
+		<p th:case="'true'"><script type="text/javascript">alert("Nie wybrano pliku")</script></p>
+	</div>
+		<br />
+		<p>Załaduj plik do przetwarzania oraz wybierz jego typ.</p>
+		<form enctype="multipart/form-data" method="POST" class="validateTips"
+			action="/upload">
+			<br /> <br /> <input type="radio" name="type" value="plain">Tekst
+			zwykły - sformatowany</input><br /> <input type="radio" name="type"
+				value="html">Strona internetowa - html</input><br /> <input
+				type="file" name="file" class="text ui-widget-content ui-corner-all" /><br />
+			<br /> <input type="submit" id="upload" value="Wyślij plik"
+				class="button" />
 		</form>
 	</div>
-    <p th:text="'Hello, ' + ${name} + '!'" />
-    <div id="footer">Opracował: Mariusz Pajączkowski Mikołaj Płachta 2017</div>
+	<p th:text="'Hello, ' + ${name} + '!'" />
+	<div id="footer">Opracował: Mariusz Pajączkowski Mikołaj Płachta
+		2017</div>
 </body>
+
 </html>
+
