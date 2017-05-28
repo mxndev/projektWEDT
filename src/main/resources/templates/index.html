@@ -8,16 +8,20 @@
 <body>
 	<div id="header">WEDT - wykrywanie paragrafów</div>
 	<div id="fullpage">
-	<div th:switch="${error}">
-		<p th:case="'true'"><script type="text/javascript">alert("Nie wybrano pliku")</script></p>
-	</div>
+		<div th:switch="${error}">
+			<p th:case="'true'">
+				<script type="text/javascript">
+					alert("Nie wybrano pliku.")
+				</script>
+			</p>
+		</div>
 		<br />
 		<p>Załaduj plik do przetwarzania oraz wybierz jego typ.</p>
 		<form enctype="multipart/form-data" method="POST" class="validateTips"
 			action="/upload">
 			<br /> <br /> <input type="radio" name="type" value="plain">Tekst
-			zwykły - sformatowany</input><br /> <input type="radio" name="type"
-				value="html">Strona internetowa - html</input><br /> <input
+			zwykły - sformatowany w formacie PDF</input><br /> <input type="radio"
+				name="type" value="html">Strona internetowa - html</input><br /> <input
 				type="file" name="file" class="text ui-widget-content ui-corner-all" /><br />
 			<br /> <input type="submit" id="upload" value="Wyślij plik"
 				class="button" />
