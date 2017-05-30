@@ -1,15 +1,13 @@
 package com.projektWEDT.projektWEDT.controller;
 
-import java.awt.List;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Formatter;
 
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccess;
-import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -18,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -59,9 +58,18 @@ public class HomeController {
 			System.out.println(text);
 			pdoc.close();
 			
-			ArrayList<String> mar = new ArrayList<>();
+			ArrayList<String> listOfParagrafs = new ArrayList<>();
+			String endedString = "";
 			
-			mar = findPartsWithEmptyLine(text);
+			listOfParagrafs = divideText(text);
+			listOfParagrafs = filterTitles(listOfParagrafs);
+			listOfParagrafs = connectLines(listOfParagrafs);
+			listOfParagrafs = filterLines(listOfParagrafs);
+			endedString = endingFormatting(listOfParagrafs);
+			
+			System.out.println(endedString);
+			
+			redirectAttributes.addFlashAttribute("endedString", endedString);
 			
 		//	parser = new PDFParser(new FileInputStream(pdfFile));
 			
@@ -76,7 +84,7 @@ public class HomeController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "redirect:/";
+		return "redirect:/result";
 	}
 
 	private File convertFile(MultipartFile file) throws IOException {
@@ -96,18 +104,127 @@ public class HomeController {
 	 * @param text
 	 * @return
 	 */
-	private ArrayList<String> findPartsWithEmptyLine(String text){
+	private ArrayList<String> divideText(String text){
 		
 		ArrayList<String> partedString = new ArrayList<>();
 		
 		String[] lines = text.split(System.getProperty("line.separator"));
 		
-		System.out.println(lines[1]);
-		System.out.println(lines[3]);
+		for(String line : lines)
+		{
+			partedString.add(line);
+		}
 		
 		return partedString;
+	}
+	
+	private ArrayList<String> connectLines(ArrayList<String> lines)
+	{
+		ArrayList<String> partedString = new ArrayList<>();
+		
+		String newLine = "";
+		for(String line : lines)
+		{
+			line = line.trim();
+			if((line.lastIndexOf(".") == (line.length() - 1)) || (line.lastIndexOf("!") == (line.length() - 1)) || (line.lastIndexOf("?") == (line.length() - 1)))
+			{
+				newLine += (" " + line);
+				partedString.add(newLine);
+				newLine = "";
+			}
+			else
+			{
+				newLine += (" " + line);
+			}
+		}
+		if(!(newLine.equals("")))
+		{
+			partedString.add(newLine);
+		}
+		return partedString;
+	}
+	
+	private ArrayList<String> filterLines(ArrayList<String> texts)
+	{
+		ArrayList<String> filteredString = new ArrayList<>();
+		
+		for(String text : texts)
+		{
+			int lastPos = 0;
+			int countDot = 0;
+			int countQuestion = 0;
+			int countExclamation = 0;
+			do
+			{
+				lastPos = text.indexOf(".", lastPos + 1);
+				if(lastPos != -1)
+				{
+					countDot++;
+				}
+			}
+			while(lastPos != -1);
+			lastPos = 0;
+			do
+			{
+				lastPos = text.indexOf("?", lastPos + 1);
+				if(lastPos != -1)
+				{
+					countQuestion++;
+				}
+			}
+			while(lastPos != -1);
+			lastPos = 0;
+			do
+			{
+				lastPos = text.indexOf("!", lastPos + 1);
+				if(lastPos != -1)
+				{
+					countExclamation++;
+				}
+			}
+			while(lastPos != -1);
+			if((countDot + countQuestion + countExclamation) > 1)
+			{
+				filteredString.add(text);
+			}
+			else if((countDot + countQuestion + countExclamation) == 1)
+			{
+				if(filteredString.size() > 0)
+				{
+					String test = (filteredString.get(filteredString.size() - 1) + text);
+					filteredString.set(filteredString.size() - 1, test);
+				}
+			}
+		}
+		return filteredString;
+	}
+	
+	private ArrayList<String> filterTitles(ArrayList<String> texts)
+	{
+		ArrayList<String> filterTitles = new ArrayList<>();
+		
+		for(String text : texts)
+		{
+			text = text.trim();
+			if(!text.matches("[0-9].*") && !text.matches("(Rys).*") && !text.matches("(Tab).*"))
+			{
+				filterTitles.add(text);
+			}
+		}
+		
+		return filterTitles;
+	}
+	
+	private String endingFormatting(ArrayList<String> texts){
+		
+		String endedString = "";
+		
+		for(String element: texts){
+			element = "<paragraf>" + element + "</paragraf>" + "\n";
+			endedString += element;
+		}
 		
 		
-		
+		return endedString;
 	}
 }
