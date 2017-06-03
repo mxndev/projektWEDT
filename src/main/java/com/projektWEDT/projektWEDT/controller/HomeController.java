@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Formatter;
 
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccess;
@@ -17,15 +16,11 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.projektWEDT.projektWEDT.model.Type;
 
 @Controller
 public class HomeController {
@@ -127,13 +122,6 @@ public class HomeController {
 
 	}
 
-	/**
-	 * Bierze tekst wprost z pdf i wyszukuje części pooddzielanych pustymi
-	 * liniami
-	 * 
-	 * @param text
-	 * @return
-	 */
 	private ArrayList<String> divideText(String text) {
 
 		ArrayList<String> partedString = new ArrayList<>();
@@ -253,31 +241,31 @@ public class HomeController {
 			tempPos = html.indexOf("<p>", tempPos + 1);
 			if(tempPos != -1)
 			{
-				if(html.indexOf("<h1>", lastPos + 1) < tempPos)
+				if(html.indexOf("<h1>", lastPos + 1) < tempPos && html.indexOf("<h1>", lastPos + 1) != -1 )
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("<h2>", lastPos + 1) < tempPos)
+				else if(html.indexOf("<h2>", lastPos + 1) < tempPos && html.indexOf("<h2>", lastPos + 1 )!= -1 )
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("<h3>", lastPos + 1) < tempPos)
+				else if(html.indexOf("<h3>", lastPos + 1) < tempPos && html.indexOf("<h3>", lastPos + 1) != -1)
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("<h4>", lastPos + 1) < tempPos)
+				else if(html.indexOf("<h4>", lastPos + 1) < tempPos && html.indexOf("<h4>", lastPos + 1) != -1)
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("<h5>", lastPos + 1) < tempPos)
+				else if(html.indexOf("<h5>", lastPos + 1) < tempPos && html.indexOf("<h5>", lastPos + 1) != -1)
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("<h6>", lastPos + 1) < tempPos)
+				else if(html.indexOf("<h6>", lastPos + 1) < tempPos && html.indexOf("<h6>", lastPos + 1) != -1)
 				{
 					parsedHTML.add("");
 				}
-				else if(html.indexOf("</div>", lastPos + 1) < tempPos)
+				else if(html.indexOf("</div>", lastPos + 1) < tempPos && html.indexOf("</div>", lastPos + 1) != -1)
 				{
 					parsedHTML.add("");
 				}
